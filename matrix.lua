@@ -1,6 +1,7 @@
 monitors = { peripheral.find("monitor") }
+
 if not monitors or #monitors < 1 then
-    print("Connect a monitor!")
+    print("Connect a monitor for a better effect!")
     sleep(3)
     monitor = term.current()
 else
@@ -20,17 +21,17 @@ snakePosY = {}
 gridSnakeLength = {}
 
 --settings
-MAX_SNAKE_LENGTH = 18 --doesn't work somehow
-MIN_SNAKE_LENGTH = 2
+MAX_SNAKE_LENGTH = math.floor(height/3)
+MIN_SNAKE_LENGTH = 5 -- > 4 is is the minimum required length
 SPEED = 0.10 --less is faster (sleep between updates)
 
 
 function generateMatrix()
+    if MAX_SNAKE_LENGTH < MIN_SNAKE_LENGTH then MAX_SNAKE_LENGTH = MIN_SNAKE_LENGTH end
     for x = 1, width do
         grid[x] = {}
         snakePosY[x] = math.random(1,42) --starting position of snake... what's the meaning of life?
         gridSnakeLength[x] = math.random(MIN_SNAKE_LENGTH,MAX_SNAKE_LENGTH)
-        print("Lenght:",gridSnakeLength[x])
         for j = 1, height do
             grid[x][j] = string.char(math.random(21,55))
         end
@@ -72,9 +73,9 @@ while true do
         end
 
         if snakePosY[x] - gridSnakeLength[x] > gridSnakeLength[x] + height then 
+            --reset the snake
             snakePosY[x] = 0 - gridSnakeLength[x]
         else
-            --print(snakePosY[x]+gridSnakeLength[x])
             if math.random(0,9) == 1 then --advance some snakes twice randomly
                 snakePosY[x] = snakePosY[x] + 2
             else
