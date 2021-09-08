@@ -2,4 +2,4 @@
 Displays the "matrix effect" from the Matrix movies on computercraft displays.
 
 # Preview
-![gif](https://media2.giphy.com/media/n1geEVPTxXNXLOb6XC/giphy.gif?cid=790b76117a25ea5dda6e6d45cd6db0472115e0142e359e33&rid=giphy.gif&ct=g)
+![gif](https://media3.giphy.com/media/JbtScM6OkSFV4OD1os/giphy.gif?cid=790b761137b402470cb442d8cdd74a5f3ab2c0d06bc57ea4&rid=giphy.gif&ct=g)
