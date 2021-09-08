@@ -1,7 +1,10 @@
---only use one monitor
-monitor = peripheral.find("monitor")
-if not monitor then
+monitors = { peripheral.find("monitor") }
+if not monitors or #monitors < 1 then
+    print("Connect a monitor!")
+    sleep(3)
     monitor = term.current()
+else
+    monitor = monitors[1] --only use one monitor
 end
 
 monitor.clear()
@@ -17,15 +20,15 @@ snakePosY = {}
 gridSnakeLength = {}
 
 --settings
-MAX_SNAKE_LENGTH = height/3
-MIN_SNAKE_LENGTH = 5
+MAX_SNAKE_LENGTH = 18 --doesn't work somehow
+MIN_SNAKE_LENGTH = 2
 SPEED = 0.10 --less is faster (sleep between updates)
 
 
 function generateMatrix()
     for x = 1, width do
         grid[x] = {}
-        snakePosY[x] = math.random(1,42) --what's the meaning of life?
+        snakePosY[x] = math.random(1,42) --starting position of snake... what's the meaning of life?
         gridSnakeLength[x] = math.random(MIN_SNAKE_LENGTH,MAX_SNAKE_LENGTH)
         print("Lenght:",gridSnakeLength[x])
         for j = 1, height do
@@ -36,58 +39,49 @@ end
 
 
 generateMatrix()
+cursorPosY = 1
 while true do
-    local cursorPosY = 1
-    for rainLoop = 1, 50 do
+    for x = 1, width do
+        monitor.setCursorPos(x,1)
         cursorPosY = 1
-        for x = 1, width do
-            for y = 1, height do
-                --color the snakes
-                if snakePosY[x] + gridSnakeLength[x] - y > 0 and snakePosY[x] - gridSnakeLength[x] - y < 0 then
-                    --if math.random(0,1) == 0 then
-                    monitor.setTextColor(colors.green)
-                    --else
-                    --    monitor.setTextColor(colors.lime)
-                    --end
-                    monitor.write(grid[x][y])
-                elseif y - gridSnakeLength[x] == 0 + snakePosY[x] then
-                    monitor.setTextColor(colors.lime)
-                    monitor.write(grid[x][y])
-                elseif y - gridSnakeLength[x] == 1 + snakePosY[x] then
-                    monitor.setTextColor(colors.gray)
-                    monitor.write(grid[x][y])
-                elseif y - gridSnakeLength[x] == 2 + snakePosY[x] then
-                    monitor.setTextColor(colors.lightGray)
-                    monitor.write(grid[x][y])
-                elseif y - gridSnakeLength[x] == 3 + snakePosY[x] then
-                    monitor.setTextColor(colors.white)
-                    monitor.write(string.char(math.random(21,55))) --random head of snake
-                else  
-                    --for debug purposes
-                    --monitor.setTextColor(colors.red)
-                    --monitor.write(y - gridSnakeLength[x])
-                end
-
-                cursorPosY = cursorPosY + 1
-                monitor.setCursorPos(x,cursorPosY)
+        for y = 1, height do
+            --color the snakes
+            if snakePosY[x] + gridSnakeLength[x] - y > 0 and snakePosY[x] - gridSnakeLength[x] - y < 0 then --tail of snake
+                monitor.setTextColor(colors.green)
+                monitor.write(grid[x][y])
+            elseif y - gridSnakeLength[x] == 0 + snakePosY[x] then
+                monitor.setTextColor(colors.lime)
+                monitor.write(grid[x][y])
+            elseif y - gridSnakeLength[x] == 1 + snakePosY[x] then
+                monitor.setTextColor(colors.gray)
+                monitor.write(grid[x][y])
+            elseif y - gridSnakeLength[x] == 2 + snakePosY[x] then
+                monitor.setTextColor(colors.lightGray)
+                monitor.write(grid[x][y])
+            elseif y - gridSnakeLength[x] == 3 + snakePosY[x] then
+                monitor.setTextColor(colors.white)
+                monitor.write(string.char(math.random(21,55))) --1random head of snake
+            else  
+                --for debug purposes
+                --monitor.setTextColor(colors.red)
+                --monitor.write(y - gridSnakeLength[x])
             end
 
-            cursorPosY = 1
-            monitor.setCursorPos(x,1)
-            monitor.setTextColor(colors.green)
-
-            if snakePosY[x] - gridSnakeLength[x] > gridSnakeLength[x] + height then 
-                snakePosY[x] = 0 - gridSnakeLength[x]
-            else
-                print(snakePosY[x]+gridSnakeLength[x])
-                snakePosY[x] = snakePosY[x] + 1
-                if math.random(0,5) == 1 then
-                    snakePosY[x] = snakePosY[x] + 1
-                end
-            end
+            cursorPosY = cursorPosY + 1
+            monitor.setCursorPos(x,cursorPosY)
         end
 
-        sleep(SPEED)
-        monitor.clear()
+        if snakePosY[x] - gridSnakeLength[x] > gridSnakeLength[x] + height then 
+            snakePosY[x] = 0 - gridSnakeLength[x]
+        else
+            --print(snakePosY[x]+gridSnakeLength[x])
+            if math.random(0,9) == 1 then --advance some snakes twice randomly
+                snakePosY[x] = snakePosY[x] + 2
+            else
+                snakePosY[x] = snakePosY[x] + 1
+            end
+        end
     end
+    sleep(SPEED)
+    monitor.clear()
 end
