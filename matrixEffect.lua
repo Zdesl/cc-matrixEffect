@@ -11,8 +11,8 @@ end
 monitor.clear()
 width,height = monitor.getSize()
 monitor.setPaletteColour(colors.green, 0x008001)
-monitor.setPaletteColour(colors.lime, 0x00C200)
-monitor.setPaletteColour(colors.gray, 0x008f11)
+monitor.setPaletteColour(colors.lime, 0x008f11)
+monitor.setPaletteColour(colors.gray, 0x00C200)
 monitor.setPaletteColour(colors.lightGray, 0x00ff41)
 monitor.setPaletteColour(colors.white, 0xDCF9C6)
 
@@ -23,6 +23,7 @@ gridSnakeLength = {}
 --settings
 MAX_SNAKE_LENGTH = math.floor(height/3)
 MIN_SNAKE_LENGTH = 5 -- > 4 is is the minimum required length
+GLITCH_CHANCE = 15 -- > 0 lower value = higher chance for a char to glitch randomly
 SPEED = 0.10 --less is faster (sleep between updates)
 
 
@@ -42,14 +43,18 @@ end
 generateMatrix()
 cursorPosY = 1
 while true do
-    for x = 1, width do
+    for x,_ in pairs(grid) do
         monitor.setCursorPos(x,1)
         cursorPosY = 1
         for y = 1, height do
             --color the snakes
             if snakePosY[x] + gridSnakeLength[x] - y > 0 and snakePosY[x] - gridSnakeLength[x] - y < 0 then --tail of snake
                 monitor.setTextColor(colors.green)
-                monitor.write(grid[x][y])
+                if math.random(0,GLITCH_CHANCE) == 0 then --change some chars randomly for the "glitch" effect
+                    monitor.write(string.char(math.random(21,55)))
+                else
+                    monitor.write(grid[x][y])
+                end
             elseif y - gridSnakeLength[x] == 0 + snakePosY[x] then
                 monitor.setTextColor(colors.lime)
                 monitor.write(grid[x][y])
